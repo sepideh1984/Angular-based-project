@@ -1,0 +1,67 @@
+
+<form [formGroup]="form" (ngSubmit)="findAircraft()">
+<div class="search-column">
+  <div class="form-body">  <mat-radio-group formControlName="airIdetType" class="radio-group">
+    <mat-radio-button [value]="'aircraft'" color="primary">Aircraft</mat-radio-button>
+    <mat-radio-button  [value]="'callsign'" color="primary">Callsign</mat-radio-button>
+  </mat-radio-group></div>
+
+ <div class="search-row">
+      <input
+        class="custom-input"
+        formControlName="searchName"
+        placeholder="e.g. DLH4B or N12345"
+      />
+      <button type="submit" mat-raised-button color="primary" class="custom-button" [disabled]="form.invalid">
+       Search
+       </button>
+    </div>
+  </div>
+</form>
+<mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+<!-- Aircraft Results -->
+<ng-container *ngIf="form.value.airIdetType === 'aircraft' && aircraftResults?.length">
+  <mat-card class="result-card" *ngFor="let item of aircraftResults ">
+    
+      <div class="result-grid">
+        <div class="label"><strong>Model:</strong></div>
+        <div class="value">{{ item.mode_s }}</div>
+
+        <div class="label"><strong>Registration:</strong></div>
+        <div class="value">{{item.registration }}</div>
+
+        <div class="label"><strong>From:</strong></div>
+        <div class="value">{{ item.registered_owner_country_name }}</div>
+
+        <div class="label"><strong>Manufacturer:</strong></div>
+        <div class="value">{{ item.manufacturer }}</div>
+      </div>
+  </mat-card>
+</ng-container>
+<!-- Callsign Results -->
+<ng-container *ngIf="form.value.airIdetType === 'callsign' && callsignResults?.length">
+  <mat-card class="result-card" *ngFor="let item of callsignResults">
+      <div class="result-grid">
+        <div class="label"><strong>Callsign:</strong></div>
+        <div class="value">{{ item.callsign }}</div>
+
+        <div class="label"><strong>Origin:</strong></div>
+        <div class="value">{{ item.origin.name }}</div>
+
+        <div class="label"><strong>Destination:</strong></div>
+        <div class="value">{{ item.destination.name }}</div>
+
+        <div class="label"><strong>Departure Airport Code:</strong></div>
+        <div class="value">{{ item.origin.iata_code }}</div>
+
+        <div class="label"><strong>Arrival Airport Code:</strong></div>
+        <div class="value">{{ item.destination.iata_code }}</div>
+      </div>
+    
+  </mat-card>
+</ng-container>
+<mat-card *ngIf="error" class="error">
+  <mat-card-content>
+    ⚠️ {{ error }}
+  </mat-card-content>
+</mat-card>
